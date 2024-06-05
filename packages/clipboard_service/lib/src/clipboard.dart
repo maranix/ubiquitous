@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:clipboard_service/clipboard_service.dart';
 import 'package:flutter/services.dart';
 
-final class ClipboardBinder with ClipboardListener implements ClipboardService {
-  ClipboardBinder() : this._();
+final class ClipboardServiceImpl
+    with ClipboardListener
+    implements ClipboardService {
+  ClipboardServiceImpl() : this._();
 
-  ClipboardBinder._() {
-    _streamController = StreamController<ClipboardData>();
+  ClipboardServiceImpl._() {
+    _streamController = StreamController<ClipboardData>.broadcast();
 
     clipboardWatcher.addListener(this);
     clipboardWatcher.start();

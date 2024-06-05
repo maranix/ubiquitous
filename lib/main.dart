@@ -29,14 +29,14 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with ClipboardListener {
-  String? clipboardText;
+class _MyHomePageState extends State<MyHomePage> {
   late final ClipboardService _clipboardService;
 
   @override
   void initState() {
-    _clipboardService = ClipboardService();
     super.initState();
+
+    _clipboardService = ClipboardService();
   }
 
   @override
@@ -62,7 +62,8 @@ class _MyHomePageState extends State<MyHomePage> with ClipboardListener {
                 return switch (snapshot.connectionState) {
                   ConnectionState.waiting =>
                     const CircularProgressIndicator.adaptive(),
-                  ConnectionState.done => Text(snapshot.requireData.text ?? ""),
+                  ConnectionState.active =>
+                    Text(snapshot.requireData.text ?? ""),
                   _ => const Text("Listening"),
                 };
               },
