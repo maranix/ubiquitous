@@ -41,6 +41,7 @@ dependencies:
 
   clipboard_service:
     path: ./packages/clipboard_service
+  collection: ^1.18.0
 
 dev_dependencies:
   flutter_test:
