@@ -8,7 +8,13 @@ import 'package:flutter/services.dart';
 part 'clipboard_event.dart';
 part 'clipboard_state.dart';
 
+/// {@template clipboard_bloc}
+/// Clipboard BLoC responsible for managing clipboard related actions.
+///
+/// Requires a `ClipboardService` to interact with the clipboard.
+/// {@endtemplate}
 final class ClipboardBloc extends Bloc<ClipboardEvent, ClipboardState> {
+  /// {@macro clipboard_bloc}
   ClipboardBloc({
     required ClipboardService service,
   })  : _service = service,
@@ -19,12 +25,16 @@ final class ClipboardBloc extends Bloc<ClipboardEvent, ClipboardState> {
     _clipboardSubscription = _service.changes.listen(_changeListener);
   }
 
+  /// Service used to interact with the clipboard on the platform side.
   final ClipboardService _service;
 
+  /// Stream subscription of clipboard changes.
   StreamSubscription<ClipboardData>? _clipboardSubscription;
 
+  /// Internal list to store clipboard content history.
   final List<String> _clipboardContents = [];
 
+  /// Provides a lazy read-only reversed view of the clipboard content history.
   Iterable<String> get _contentStack => _clipboardContents.reversed;
 
   void _onChanged(
@@ -35,9 +45,7 @@ final class ClipboardBloc extends Bloc<ClipboardEvent, ClipboardState> {
     if (data == null) return;
 
     _clipboardContents.add(data);
-    emit(
-      ClipboardContents(_contentStack),
-    );
+    emit(ClipboardLoaded(_contentStack));
   }
 
   void _onPurged(
@@ -46,11 +54,11 @@ final class ClipboardBloc extends Bloc<ClipboardEvent, ClipboardState> {
   ) {
     _clipboardContents.clear();
 
-    emit(
-      ClipboardContents(_contentStack),
-    );
+    emit(ClipboardLoaded(_contentStack));
   }
 
+  /// Listens to clipboard changes from the service and adds a corresponding
+  /// `_ClipboardChanged` event to the bloc.
   void _changeListener(ClipboardData data) {
     add(_ClipboardChanged(data));
   }
